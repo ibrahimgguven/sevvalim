@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sana</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Pinyon+Script&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg1: #fff5f8;
+            --bg2: #fde5ee;
+            --bg3: #f5cfe0;
+            --petal-1: #ffe8f0;
+            --petal-2: #f5b8cc;
+            --petal-3: #e898b4;
+            --petal-4: #cf7090;
+            --center: #b84e70;
+            --leaf: #7ab068;
+            --text-dark: #5a2d40;
+            --text-mid: #8a4a60;
+            --text-light: #b888a0;
+            --rose-accent: #c85870;
+            --star-gold: #f5d08a;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            color: var(--text-dark);
+            background: var(--bg1);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 200px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: .5;
+        }
+
+        /* ═══════════════ SECTION 1 — HERO ═══════════════ */
+        #hero {
+            position: relative;
+            min-height: 100vh;
+            background: radial-gradient(ellipse 90% 70% at 50% 15%, var(--bg1) 0%, var(--bg2) 55%, var(--bg3) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 70px 24px 90px;
+            z-index: 2;
+        }
+
+        #petal-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 3;
+            opacity: 0;
+            animation: revealDown 1.4s cubic-bezier(.22, 1, .36, 1) forwards .4s;
+        }
+
+        .eyebrow {
+            font-size: .82rem;
+            letter-spacing: .45em;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 14px;
+        }
+
+        .main-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(4.5rem, 13vw, 8rem);
+            color: var(--rose-accent);
+            line-height: .95;
+            text-shadow: 0 6px 40px rgba(200, 80, 110, .18), 0 2px 8px rgba(200, 80, 110, .1);
+        }
+
+        /* Rose */
+        .rose-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+        }
+
+        .bloom {
+            position: relative;
+            width: 240px;
+            height: 240px;
+        }
+
+        .petal-layer {
+            position: absolute;
+            inset: 0;
+        }
+
+        .petal {
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            transform-origin: bottom center;
+            animation: petalOpen cubic-bezier(.34, 1.1, .64, 1) forwards;
+            opacity: 0;
+            border-radius: 50% 50% 30% 30% / 65% 65% 35% 35%;
+        }
+
+        .layer-3 .petal {
+            width: 52px;
+            height: 88px;
+            margin-left: -26px;
+            background: radial-gradient(ellipse 55% 45% at 38% 28%, #fff0f5, var(--petal-2));
+            box-shadow: inset -3px -6px 14px rgba(200, 100, 140, .15);
+            animation-duration: 2.8s;
+            animation-delay: .9s;
+            z-index: 1;
+        }
+
+        .layer-2 .petal {
+            width: 40px;
+            height: 68px;
+            margin-left: -20px;
+            background: radial-gradient(ellipse 55% 45% at 38% 28%, #ffd0e4, var(--petal-3));
+            box-shadow: inset -2px -5px 12px rgba(190, 80, 130, .2);
+            animation-duration: 2.2s;
+            animation-delay: 1.7s;
+            z-index: 2;
+        }
+
+        .layer-1 .petal {
+            width: 28px;
+            height: 50px;
+            margin-left: -14px;
+            background: radial-gradient(ellipse 55% 45% at 38% 28%, #ffb8cc, var(--petal-4));
+            box-shadow: inset -2px -4px 10px rgba(170, 60, 110, .25);
+            animation-duration: 1.6s;
+            animation-delay: 2.6s;
+            z-index: 3;
+        }
+
+        @keyframes petalOpen {
+            0% {
+                opacity: 0;
+                transform: rotate(var(--r)) translateY(8px) scale(.04);
+            }
+
+            18% {
+                opacity: .9;
+            }
+
+            100% {
+                opacity: 1;
+                transform: rotate(var(--r)) translateY(-14px) scale(1);
+            }
+        }
+
+        .rose-center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            translate: -50% -50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 35%, #ffd0da, var(--center));
+            box-shadow: 0 4px 20px rgba(160, 60, 100, .55), inset 0 2px 6px rgba(255, 255, 255, .3);
+            z-index: 10;
+            opacity: 0;
+            animation: scaleIn .9s cubic-bezier(.34, 1.4, .64, 1) forwards 3.4s;
+        }
+
+        .rose-center::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 180, 200, .3), transparent 70%);
+            animation: pulse 3s ease-in-out infinite 4.2s;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: .5;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.18)
+            }
+        }
+
+        .stem-area {
+            position: relative;
+            width: 60px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .stem {
+            width: 3.5px;
+            background: linear-gradient(to bottom, #78aa66, #4a7840);
+            border-radius: 3px;
+            height: 0;
+            animation: growStem 1.4s cubic-bezier(.22, 1, .36, 1) forwards .6s;
+        }
+
+        @keyframes growStem {
+            to {
+                height: 100px
+            }
+        }
+
+        .leaf {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .leaf-l {
+            right: calc(50% - 2px);
+            top: 18px;
+            animation: revealLeaf .7s ease forwards 1.4s;
+        }
+
+        .leaf-r {
+            left: calc(50% - 2px);
+            top: 54px;
+            animation: revealLeafR .7s ease forwards 1.8s;
+        }
+
+        @keyframes revealLeaf {
+            from {
+                opacity: 0;
+                transform: rotate(-20deg) scaleX(0)
+            }
+
+            to {
+                opacity: 1;
+                transform: rotate(-20deg) scaleX(1)
+            }
+        }
+
+        @keyframes revealLeafR {
+            from {
+                opacity: 0;
+                transform: rotate(20deg) scaleX(-1) scaleY(0)
+            }
+
+            to {
+                opacity: 1;
+                transform: rotate(20deg) scaleX(-1) scaleY(1)
+            }
+        }
+
+        .leaf-svg {
+            fill: var(--leaf);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 5.5s;
+            color: var(--text-light);
+            font-size: .73rem;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+            z-index: 3;
+            cursor: pointer;
+        }
+
+        .scroll-hint .arrow {
+            width: 1px;
+            height: 38px;
+            background: linear-gradient(to bottom, var(--text-light), transparent);
+            animation: arrowBounce 2s ease-in-out infinite 6s;
+        }
+
+        @keyframes arrowBounce {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(9px)
+            }
+        }
+
+        /* ═══════════════ SECTION 2 — POEM ═══════════════ */
+        #poem-section {
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, var(--bg3) 0%, #f0c8d8 50%, #e8b8cc 100%);
+            padding: 110px 24px 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #poem-section::before {
+            content: '♡';
+            position: absolute;
+            font-size: clamp(280px, 48vw, 480px);
+            color: rgba(200, 88, 112, .045);
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        .poem-label {
+            font-size: .78rem;
+            letter-spacing: .5em;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 48px;
+        }
+
+        .poem-card {
+            max-width: 580px;
+            width: 100%;
+            background: rgba(255, 255, 255, .38);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, .65);
+            border-radius: 2px;
+            padding: clamp(40px, 8vw, 70px) clamp(30px, 8vw, 80px);
+            box-shadow: 0 20px 80px rgba(180, 70, 110, .1), 0 4px 20px rgba(180, 70, 110, .08);
+        }
+
+        .poem-ornament {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 42px;
+        }
+
+        .poem-ornament::before,
+        .poem-ornament::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+        }
+
+        .poem-ornament::before {
+            background: linear-gradient(to right, transparent, var(--text-light));
+        }
+
+        .poem-ornament::after {
+            background: linear-gradient(to left, transparent, var(--text-light));
+        }
+
+        .poem-ornament span {
+            color: var(--rose-accent);
+            font-size: 1.1rem;
+        }
+
+        .poem-body {
+            font-size: clamp(1.1rem, 3vw, 1.38rem);
+            font-weight: 300;
+            font-style: italic;
+            line-height: 2.55;
+            color: var(--text-dark);
+            letter-spacing: .02em;
+        }
+
+        .poem-stanza {
+            margin-bottom: 2.6em;
+        }
+
+        .poem-stanza:last-child {
+            margin-bottom: 0;
+        }
+
+        .poem-footer-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 48px;
+            gap: 14px;
+        }
+
+        .poem-footer-line {
+            width: 50px;
+            height: 1px;
+            background: var(--text-light);
+            opacity: .5;
+        }
+
+        .signature {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            color: var(--rose-accent);
+            text-shadow: 0 3px 20px rgba(200, 80, 110, .2);
+        }
+
+        /* ═══════════════ SECTION 3 — REASONS ═══════════════ */
+        #reasons {
+            position: relative;
+            z-index: 2;
+            background: var(--bg1);
+            padding: 110px 24px 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #reasons::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(200, 88, 112, .2), transparent);
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-heading .label {
+            font-size: .78rem;
+            letter-spacing: .5em;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .section-heading .title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(2.8rem, 8vw, 4.5rem);
+            color: var(--rose-accent);
+            line-height: 1.1;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 272px), 1fr));
+            gap: 22px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .reason-card {
+            background: white;
+            border: 1px solid rgba(200, 120, 150, .13);
+            border-radius: 2px;
+            padding: 36px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 8px 40px rgba(180, 80, 120, .06);
+            transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .35s ease;
+            cursor: default;
+        }
+
+        .reason-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 22px 60px rgba(180, 80, 120, .13);
+        }
+
+        .card-icon {
+            font-size: 1.9rem;
+            line-height: 1;
+        }
+
+        .card-title {
+            font-size: 1.08rem;
+            font-weight: 400;
+            color: var(--rose-accent);
+            letter-spacing: .04em;
+        }
+
+        .card-body {
+            font-size: 1.04rem;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.9;
+            color: var(--text-mid);
+        }
+
+        /* ═══════════════ SECTION 4 — HEART ═══════════════ */
+        #heart-section {
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, var(--bg1), var(--bg2));
+            padding: 90px 24px 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 36px;
+        }
+
+        .heart-prompt {
+            font-size: .8rem;
+            letter-spacing: .42em;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+
+        .heart-btn {
+            width: 130px;
+            height: 130px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform .25s cubic-bezier(.34, 1.4, .64, 1);
+            filter: drop-shadow(0 10px 35px rgba(200, 80, 120, .3));
+        }
+
+        .heart-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .heart-btn:active {
+            transform: scale(.94);
+        }
+
+        .heart-btn svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .heart-path {
+            fill: url(#hg);
+        }
+
+        .heart-message {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(2rem, 6vw, 3rem);
+            color: var(--rose-accent);
+            opacity: 0;
+            transform: scale(.8) translateY(10px);
+            transition: opacity .55s ease, transform .55s cubic-bezier(.34, 1.4, .64, 1);
+            text-align: center;
+            text-shadow: 0 3px 20px rgba(200, 80, 110, .2);
+            min-height: 4rem;
+        }
+
+        .heart-message.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* ═══════════════ SECTION 5 — STARRY NIGHT ═══════════════ */
+        #starry {
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, #160920 0%, #0d0818 35%, #060410 100%);
+            padding: 130px 24px 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            min-height: 75vh;
+        }
+
+        #star-canvas {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .night-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            max-width: 580px;
+        }
+
+        .night-eyebrow {
+            font-size: .76rem;
+            letter-spacing: .52em;
+            text-transform: uppercase;
+            color: rgba(245, 208, 138, .5);
+            margin-bottom: 26px;
+        }
+
+        .night-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(3.5rem, 10vw, 6rem);
+            color: var(--star-gold);
+            line-height: 1;
+            text-shadow: 0 0 40px rgba(245, 208, 138, .4), 0 0 80px rgba(245, 208, 138, .15);
+            margin-bottom: 52px;
+        }
+
+        .night-text {
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            font-style: italic;
+            font-weight: 300;
+            line-height: 2.5;
+            color: rgba(255, 230, 240, .72);
+            white-space: pre-line;
+            margin-bottom: 64px;
+        }
+
+        .night-signature {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(2.5rem, 7vw, 4rem);
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 180, 200, .65), 0 0 70px rgba(255, 150, 180, .3);
+        }
+
+        /* ═══════════════ SCROLL REVEAL ═══════════════ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity 1s cubic-bezier(.22, 1, .36, 1), transform 1s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══════════════ SHARED KEYFRAMES ═══════════════ */
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes revealDown {
+            from {
+                opacity: 0;
+                transform: translateY(-22px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes revealUp {
+            from {
+                opacity: 0;
+                transform: translateY(26px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0)
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1)
+            }
+        }
+
+        @media(max-width:500px) {
+            .bloom {
+                width: 200px;
+                height: 200px;
+            }
+
+            .layer-3 .petal {
+                width: 44px;
+                height: 75px;
+                margin-left: -22px;
+            }
+
+            .layer-2 .petal {
+                width: 34px;
+                height: 58px;
+                margin-left: -17px;
+            }
+
+            .layer-1 .petal {
+                width: 24px;
+                height: 42px;
+                margin-left: -12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="petal-canvas"></canvas>
+
+    <!-- ═══ HERO ═══ -->
+    <section id="hero">
+        <header class="header">
+            <p class="eyebrow">sana, sadece sana</p>
+            <h1 class="main-title">Seninle</h1>
+        </header>
+
+        <div class="rose-section">
+            <div class="bloom">
+                <div class="petal-layer layer-3">
+                    <div class="petal" style="--r:0deg"></div>
+                    <div class="petal" style="--r:45deg"></div>
+                    <div class="petal" style="--r:90deg"></div>
+                    <div class="petal" style="--r:135deg"></div>
+                    <div class="petal" style="--r:180deg"></div>
+                    <div class="petal" style="--r:225deg"></div>
+                    <div class="petal" style="--r:270deg"></div>
+                    <div class="petal" style="--r:315deg"></div>
+                </div>
+                <div class="petal-layer layer-2">
+                    <div class="petal" style="--r:30deg"></div>
+                    <div class="petal" style="--r:90deg"></div>
+                    <div class="petal" style="--r:150deg"></div>
+                    <div class="petal" style="--r:210deg"></div>
+                    <div class="petal" style="--r:270deg"></div>
+                    <div class="petal" style="--r:330deg"></div>
+                </div>
+                <div class="petal-layer layer-1">
+                    <div class="petal" style="--r:0deg"></div>
+                    <div class="petal" style="--r:72deg"></div>
+                    <div class="petal" style="--r:144deg"></div>
+                    <div class="petal" style="--r:216deg"></div>
+                    <div class="petal" style="--r:288deg"></div>
+                </div>
+                <div class="rose-center"></div>
+            </div>
+            <div class="stem-area">
+                <div class="stem"></div>
+                <div class="leaf leaf-l">
+                    <svg width="36" height="20" viewBox="0 0 36 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 10 Q10 0 36 4 Q22 20 0 10Z" class="leaf-svg" />
+                        <path d="M0 10 Q18 8 36 4" stroke="#5a8840" stroke-width=".8" fill="none" opacity=".4" />
+                    </svg>
+                </div>
+                <div class="leaf leaf-r">
+                    <svg width="36" height="20" viewBox="0 0 36 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 10 Q10 0 36 4 Q22 20 0 10Z" class="leaf-svg" />
+                        <path d="M0 10 Q18 8 36 4" stroke="#5a8840" stroke-width=".8" fill="none" opacity=".4" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-hint" onclick="document.getElementById('poem-section').scrollIntoView({behavior:'smooth'})">
+            aşağı kaydır
+            <div class="arrow"></div>
+        </div>
+    </section>
+
+    <!-- ═══ POEM ═══ -->
+    <section id="poem-section">
+        <p class="poem-label reveal">şiir</p>
+
+        <div class="poem-card reveal">
+            <div class="poem-ornament"><span>✦</span></div>
+            <div class="poem-body">
+                <div class="poem-stanza">Yüzyıllardır beklediğim o eşsiz neşeymişsin,<br>
+                    Sensiz, kuru bir yaprak gibi savrulurmuş kalbim.<br>
+                    Şimdi yeşereceğim toprağıma kavuşmuşum,<br>
+                    Kalbinin en kuytu köşesinde çiçek açmışım.</div>
+                <div class="poem-stanza">Gözlerinde kaybolup, saçlarında savrulduğum,<br>
+                    Neşesinde dertlerimi unutup çocuklaştığım,<br>
+                    Kalbimin en güzel, en ebedi sakini,<br>
+                    Seninle buldum ben, eksik kalan kendimi.</div>
+            </div>
+            <div class="poem-footer-area">
+                <div class="poem-footer-line"></div>
+                <div class="signature">Seninle tamamım</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ REASONS ═══ -->
+    <section id="reasons">
+        <div class="section-heading reveal">
+            <p class="label">seni seviyorum çünkü…</p>
+            <h2 class="title">Sayısız Sebep</h2>
+        </div>
+
+        <div class="cards-grid">
+            <div class="reason-card reveal" style="transition-delay:.05s">
+                <div class="card-icon">🌿</div>
+                <div class="card-title">Toprağımsın</div>
+                <div class="card-body">Sende köklendim, sende büyüdüm. Yanında olmak evde olmak gibi — huzurlu, sıcak,
+                    gerçek.
+                </div>
+            </div>
+            <div class="reason-card reveal" style="transition-delay:.12s">
+                <div class="card-icon">🌊</div>
+                <div class="card-title">Gözlerin</div>
+                <div class="card-body">Baktığında dünyanın geri kalanı bulanıklaşıyor. O bakış yeterli; kelimeler
+                    yetersiz
+                    kalıyor.</div>
+            </div>
+            <div class="reason-card reveal" style="transition-delay:.19s">
+                <div class="card-icon">☀️</div>
+                <div class="card-title">Neşen</div>
+                <div class="card-body">Güldüğünde her dert küçülüyor. Seninle çocuk gibi eğleniyorum — ve bu en güzel
+                    his.</div>
+            </div>
+            <div class="reason-card reveal" style="transition-delay:.26s">
+                <div class="card-icon">🌙</div>
+                <div class="card-title">Tamamlıyorsun</div>
+                <div class="card-body">Seni bulmadan önce bir parçam eksikti. Şimdi o boşluğun ne kadar derin olduğunu
+                    anlıyorum.</div>
+            </div>
+            <div class="reason-card reveal" style="transition-delay:.33s">
+                <div class="card-icon">🌸</div>
+                <div class="card-title">Saçların</div>
+                <div class="card-body">Saçlarında savrulmak — bazen en derin huzurun kelimesiz bir yerde olduğunu
+                    anlamak.</div>
+            </div>
+            <div class="reason-card reveal" style="transition-delay:.40s">
+                <div class="card-icon">✨</div>
+                <div class="card-title">Varlığın</div>
+                <div class="card-body">Yüzyıllarca beklediğime değdi. Çünkü sen eşsizsin — geçmişimin en güzel cevabı.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ HEART ═══ -->
+    <section id="heart-section">
+        <p class="heart-prompt reveal">bir sürpriz var — kalbe dokun</p>
+
+        <button class="heart-btn reveal" id="heart-btn" aria-label="Kalbe tıkla">
+            <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="hg" cx="40%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#ffb8cc" />
+                        <stop offset="100%" stop-color="#c84868" />
+                    </radialGradient>
+                </defs>
+                <path class="heart-path"
+                    d="M50 80 C50 80 5 52 5 28 C5 14 16 5 28 5 C36 5 44 9 50 16 C56 9 64 5 72 5 C84 5 95 14 95 28 C95 52 50 80 50 80Z" />
+            </svg>
+        </button>
+
+        <div class="heart-message" id="heart-msg"></div>
+    </section>
+
+    <!-- ═══ STARRY ═══ -->
+    <section id="starry">
+        <canvas id="star-canvas"></canvas>
+        <div class="night-content">
+            <p class="night-eyebrow reveal">her gece, her sabah</p>
+            <h2 class="night-title reveal" style="transition-delay:.15s">Seninle Sonsuz</h2>
+            <p class="night-text reveal" style="transition-delay:.3s">Yıldızlar kadar uzak görünen şeyler
+                seninle dokunulabilir oldu.
+                Her sabah gözlerini açtığında
+                bir yıldız daha doğuyor içimde.
+
+                Sen benim en güzel tesellimsin.</p>
+            <div class="night-signature reveal" style="transition-delay:.45s">Seni seviyorum ♡</div>
+        </div>
+    </section>
+
+    <script>
+        /* ── Falling petals (hero canvas) ── */
+        const pC = document.getElementById('petal-canvas');
+        const pX = pC.getContext('2d');
+        function rPC() { pC.width = innerWidth; pC.height = innerHeight; }
+        rPC(); window.addEventListener('resize', rPC);
+        const PC = [[255, 224, 236], [250, 190, 215], [255, 240, 248], [236, 165, 190], [255, 210, 228]];
+        class FP {
+            constructor(i) { this.reset(i); }
+            reset(i = false) {
+                this.x = Math.random() * pC.width; this.y = i ? Math.random() * -pC.height * 1.5 : -40;
+                this.w = Math.random() * 11 + 6; this.h = this.w * (Math.random() * .7 + 1.1);
+                this.vy = Math.random() * 1.2 + .7; this.vx = (Math.random() - .5) * .7;
+                this.rot = Math.random() * Math.PI * 2; this.dr = (Math.random() - .5) * .035;
+                this.wt = Math.random() * Math.PI * 2; this.ws = Math.random() * .025 + .008; this.wa = Math.random() * .9 + .3;
+                const c = PC[~~(Math.random() * PC.length)]; this.r = c[0]; this.g = c[1]; this.b = c[2];
+                this.a = Math.random() * .35 + .45;
+            }
+            tick() { this.wt += this.ws; this.x += this.vx + Math.sin(this.wt) * this.wa; this.y += this.vy; this.rot += this.dr; if (this.y > pC.height + 50) this.reset(); }
+            draw() {
+                pX.save(); pX.translate(this.x, this.y); pX.rotate(this.rot); pX.globalAlpha = this.a;
+                const g = pX.createRadialGradient(-this.w * .15, -this.h * .2, 1, 0, 0, this.h * .7);
+                g.addColorStop(0, 'rgba(255,255,255,.6)'); g.addColorStop(1, `rgba(${this.r},${this.g},${this.b},1)`);
+                pX.fillStyle = g; pX.beginPath(); pX.ellipse(0, 0, this.w * .45, this.h * .5, 0, 0, Math.PI * 2); pX.fill(); pX.restore();
+            }
+        }
+        const petals = Array.from({ length: 45 }, () => new FP(true));
+        setTimeout(() => { for (let i = 0; i < 15; i++)petals.push(new FP(false)); }, 3500);
+        (function loopPC() { pX.clearRect(0, 0, pC.width, pC.height); petals.forEach(p => { p.tick(); p.draw(); }); requestAnimationFrame(loopPC); })();
+
+        /* ── Scroll reveal ── */
+        const obs = new IntersectionObserver(es => {
+            es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+        }, { threshold: .15 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        /* ── Interactive heart ── */
+        const MSGS = ['Seni çok seviyorum ♡', 'Kalbimin tek sahibi', 'Seninle her an güzel', 'Yüzyıllarca bekledim, değdi', 'Sen benim her şeyimsin', 'Seninle tamamım ♡', 'Gözlerin benim evim', 'Sonsuz ve hep seninle'];
+        let mi = 0;
+        const hBtn = document.getElementById('heart-btn');
+        const hMsg = document.getElementById('heart-msg');
+
+        function burst(bx, by) {
+            for (let i = 0; i < 14; i++) {
+                const h = document.createElement('div');
+                h.textContent = '♡';
+                const sz = Math.random() * 16 + 9;
+                h.style.cssText = `position:fixed;left:${bx}px;top:${by}px;font-size:${sz}px;color:hsl(${Math.random() * 30 + 340},80%,68%);pointer-events:none;z-index:999;will-change:transform;`;
+                document.body.appendChild(h);
+                const a = (Math.random() * 360) * Math.PI / 180, d = Math.random() * 130 + 70;
+                requestAnimationFrame(() => {
+                    h.style.transition = 'transform 1.15s cubic-bezier(.22,1,.36,1),opacity 1.15s ease';
+                    h.style.transform = `translate(${Math.cos(a) * d}px,${Math.sin(a) * d}px) scale(0)`;
+                    h.style.opacity = '0';
+                });
+                setTimeout(() => h.remove(), 1200);
+            }
+        }
+
+        hBtn.addEventListener('click', function (e) {
+            const r = hBtn.getBoundingClientRect();
+            burst(r.left + r.width / 2, r.top + r.height / 2);
+            hMsg.classList.remove('show');
+            setTimeout(() => { hMsg.textContent = MSGS[mi % MSGS.length]; mi++; hMsg.classList.add('show'); }, 130);
+            hBtn.style.transform = 'scale(1.28)';
+            setTimeout(() => hBtn.style.transform = '', 320);
+        });
+
+        /* ── Starry night canvas ── */
+        const sC = document.getElementById('star-canvas');
+        const sX = sC.getContext('2d');
+        function rSC() { sC.width = sC.parentElement.offsetWidth; sC.height = sC.parentElement.offsetHeight; }
+        rSC(); window.addEventListener('resize', rSC);
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * sC.width; this.y = Math.random() * sC.height;
+                this.r = Math.random() * 1.7 + .3; this.a = Math.random() * .65 + .2;
+                this.da = (Math.random() - .5) * .007;
+                this.col = Math.random() > .15 ? 'rgba(255,255,255,' : 'rgba(245,208,138,';
+            }
+            tick() { this.a += this.da; if (this.a < .1 || this.a > .95) this.da *= -1; }
+            draw() { sX.beginPath(); sX.arc(this.x, this.y, this.r, 0, Math.PI * 2); sX.fillStyle = this.col + this.a + ')'; sX.fill(); }
+        }
+
+        class Shooter {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * sC.width; this.y = Math.random() * sC.height * .4;
+                this.len = Math.random() * 90 + 50; this.spd = Math.random() * 5 + 4;
+                this.ang = Math.PI / 5; this.life = 1; this.dl = Math.random() * .02 + .015;
+                this.active = false; this.next = Date.now() + Math.random() * 8000 + 3000;
+            }
+            tick() {
+                if (!this.active && Date.now() > this.next) { this.active = true; }
+                if (!this.active) return;
+                this.x += Math.cos(this.ang) * this.spd; this.y += Math.sin(this.ang) * this.spd;
+                this.life -= this.dl; if (this.life <= 0) this.reset();
+            }
+            draw() {
+                if (!this.active) return;
+                const tx = this.x - Math.cos(this.ang) * this.len, ty = this.y - Math.sin(this.ang) * this.len;
+                const g = sX.createLinearGradient(tx, ty, this.x, this.y);
+                g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, `rgba(255,255,255,${this.life * .85})`);
+                sX.beginPath(); sX.moveTo(tx, ty); sX.lineTo(this.x, this.y);
+                sX.strokeStyle = g; sX.lineWidth = 1.6; sX.stroke();
+            }
+        }
+
+        const stars = Array.from({ length: 230 }, () => new Star());
+        const shooters = Array.from({ length: 3 }, () => new Shooter());
+        (function loopS() {
+            sX.clearRect(0, 0, sC.width, sC.height);
+            stars.forEach(s => { s.tick(); s.draw(); });
+            shooters.forEach(s => { s.tick(); s.draw(); });
+            requestAnimationFrame(loopS);
+        })();
+
+        /* ── Night section reveal ── */
+        const nObs = new IntersectionObserver(es => {
+            es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); nObs.unobserve(e.target); } });
+        }, { threshold: .2 });
+        document.querySelectorAll('.night-eyebrow,.night-title,.night-text,.night-signature').forEach(el => nObs.observe(el));
+    </script>
+</body>
+
+</html>
